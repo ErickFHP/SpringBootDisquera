@@ -44,8 +44,41 @@ public class AlbumService {
             }
         } catch (Exception e) {
             Map<String, String> errorBody = new HashMap<>();
-            errorBody.put("message", e.getMessage()); // Use exception's message
+            errorBody.put("message", e.getMessage());
             return new ResponseEntity<>(errorBody, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public ResponseEntity<?> getById(Integer id) {
+        try {
+            Optional<AlbumModel> albumOptional = albumRepositories.findById(id);
+            if (albumOptional.isPresent()) {
+                AlbumModel album = albumOptional.get();
+                return new ResponseEntity<>(album, HttpStatus.OK);
+            } else {
+                Map<String, String> response = new HashMap<>();
+                response.put("message", "No encontrado");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            Map<String, String> errorBody = new HashMap<>();
+            errorBody.put("message", e.getMessage());
+            return new ResponseEntity<>(errorBody, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public ResponseEntity<AlbumModel> updateById(AlbumModel request, Integer id){
+        Optional<AlbumModel> albumOptional = albumRepositories.findById(id);
+        if (albumOptional.isPresent()) {
+            AlbumModel album = albumOptional.get();
+            album.setTitulo(request.getTitulo());
+            album.setPrecio(request.getPrecio());
+            album.setEdicion_especial(request.getEdicion_especial());
+            album.setFecha_lanzamiento(request.getFecha_lanzamiento());
+            album = albumRepositories.save(album); // Save the updated album
+            return new ResponseEntity<>(album, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }

@@ -23,4 +23,14 @@ public class AlbumController {
     public ResponseEntity<?> saveAlbum (@RequestBody AlbumModel album) {
         return this.albumService.saveAlbum(album);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById (@PathVariable("id") Integer id) {
+        return this.albumService.getById(id);
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateById (@RequestBody AlbumModel request, @PathVariable("id") Integer id) {
+        return this.albumService.updateById(request, id);
+    }
 }
